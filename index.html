@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nallabothula Rajesh — Software Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0e1a;
+    --surface: #11172b;
+    --surface-2: #171f3a;
+    --cyan: #00e5ff;
+    --magenta: #ff3ea5;
+    --amber: #ffc93c;
+    --text: #eef1ff;
+    --muted: #8b93b8;
+    --line: #232b4a;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+    position:relative;
+  }
+  body::before{
+    content:'';
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.035) 1px, transparent 1px);
+    background-size: 42px 42px;
+    pointer-events:none;
+    z-index:0;
+  }
+  .display{ font-family:'Space Grotesk', sans-serif; }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+
+  a{ color:inherit; text-decoration:none; }
+
+  /* ---------- Layout shell ---------- */
+  .wrap{ position:relative; z-index:1; max-width:1040px; margin:0 auto; padding:0 28px; }
+
+  /* ---------- Nav ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    backdrop-filter: blur(10px);
+    background:rgba(10,14,26,0.75);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{ display:flex; align-items:center; justify-content:space-between; height:64px; }
+  .brand{ font-family:'JetBrains Mono', monospace; font-weight:700; font-size:15px; letter-spacing:0.5px; }
+  .brand .dot{ color:var(--cyan); }
+  .navlinks{ display:flex; gap:28px; font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--muted); }
+  .navlinks a:hover{ color:var(--cyan); }
+  @media (max-width: 640px){ .navlinks{ gap:16px; font-size:12px; } }
+
+  /* ---------- Signal spine ---------- */
+  .spine{
+    position:absolute;
+    left:50%; top:0; bottom:0;
+    width:2px;
+    transform:translateX(-0.5px);
+    z-index:0;
+    display:none;
+  }
+  @media (min-width:900px){ .spine{ display:block; } }
+
+  /* ---------- Hero ---------- */
+  .hero{ padding:120px 0 100px; position:relative; }
+  .hero .wrap{
+    display:grid;
+    grid-template-columns: 1.3fr 0.85fr;
+    align-items:center;
+    gap:56px;
+  }
+  @media (max-width: 860px){
+    .hero .wrap{ grid-template-columns:1fr; }
+    .hero-photo{ order:-1; max-width:260px; margin:0 auto; }
+  }
+  .hero-photo{
+    position:relative;
+    aspect-ratio: 4 / 5;
+    border-radius:20px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    background:var(--surface);
+  }
+  .hero-photo::before{
+    content:'';
+    position:absolute; inset:-2px;
+    border-radius:22px;
+    padding:2px;
+    background:conic-gradient(from var(--spin,0deg), var(--cyan), var(--magenta), var(--amber), var(--cyan));
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: spin-ring 6s linear infinite;
+    z-index:2;
+    pointer-events:none;
+  }
+  @keyframes spin-ring{ to{ --spin:360deg; } }
+  @property --spin{ syntax:'<angle>'; inherits:false; initial-value:0deg; }
+  .hero-photo img{
+    position:relative; z-index:1;
+    width:100%; height:100%; object-fit:cover;
+    display:block;
+    filter:saturate(1.05) contrast(1.03);
+  }
+  .hero-photo .scanline{
+    position:absolute; left:0; right:0; height:2px; z-index:3;
+    background:linear-gradient(90deg, transparent, var(--cyan), transparent);
+    box-shadow:0 0 12px 2px var(--cyan);
+    animation: scan 3.2s ease-in-out infinite;
+    opacity:0.75;
+  }
+  @keyframes scan{
+    0%{ top:4%; opacity:0; }
+    10%{ opacity:0.8; }
+    50%{ top:94%; opacity:0.8; }
+    60%{ opacity:0; }
+    100%{ top:94%; opacity:0; }
+  }
+  .hero-text{ min-width:0; }
+
+  /* ---------- Reveal-on-scroll ---------- */
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity 0.7s cubic-bezier(.2,.7,.2,1), transform 0.7s cubic-bezier(.2,.7,.2,1);
+  }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+  .reveal-stagger.in > *{ animation:none; }
+
+  @keyframes fadeUp{
+    from{ opacity:0; transform:translateY(18px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .hero-anim > *{ animation:fadeUp 0.8s cubic-bezier(.2,.7,.2,1) both; }
+  .hero-anim > *:nth-child(1){ animation-delay:0.05s; }
+  .hero-anim > *:nth-child(2){ animation-delay:0.15s; }
+  .hero-anim > *:nth-child(3){ animation-delay:0.25s; }
+  .hero-anim > *:nth-child(4){ animation-delay:0.35s; }
+  .hero-anim > *:nth-child(5){ animation-delay:0.45s; }
+
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--cyan);
+    border:1px solid rgba(0,229,255,0.35); padding:6px 12px; border-radius:100px;
+    background:rgba(0,229,255,0.06);
+    margin-bottom:28px;
+  }
+  .eyebrow .pulse{
+    width:6px; height:6px; border-radius:50%; background:var(--cyan);
+    box-shadow:0 0 8px 2px var(--cyan);
+    animation:blink 1.6s ease-in-out infinite;
+  }
+  @keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:0.25;} }
+
+  h1.name{
+    font-size:clamp(40px, 7vw, 76px);
+    line-height:1.02;
+    font-weight:700;
+    letter-spacing:-0.02em;
+    margin-bottom:18px;
+  }
+  h1.name .hl{
+    background:linear-gradient(90deg, var(--cyan), var(--magenta) 60%, var(--amber));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .role{
+    font-family:'JetBrains Mono', monospace;
+    font-size:clamp(14px,2.2vw,19px);
+    color:var(--muted);
+    margin-bottom:28px;
+  }
+  .role .amber{ color:var(--amber); }
+  .bio{
+    max-width:600px;
+    font-size:16.5px;
+    line-height:1.75;
+    color:#c3c9e8;
+    margin-bottom:38px;
+  }
+  .cta-row{ display:flex; flex-wrap:wrap; gap:14px; }
+  .btn{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13.5px;
+    padding:13px 22px;
+    border-radius:8px;
+    display:inline-flex; align-items:center; gap:8px;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn-primary{
+    background:linear-gradient(90deg, var(--cyan), var(--magenta));
+    color:#0a0e1a; font-weight:700;
+  }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,229,255,0.25); }
+  .btn-ghost{
+    border:1px solid var(--line); color:var(--text);
+  }
+  .btn-ghost:hover{ border-color:var(--cyan); color:var(--cyan); transform:translateY(-2px); }
+
+  /* ---------- Section shared ---------- */
+  section{ padding:90px 0; position:relative; }
+  .section-tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    color:var(--cyan);
+    margin-bottom:10px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .section-tag::before{ content:''; width:22px; height:1px; background:var(--cyan); }
+  h2.section-title{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:clamp(26px,4vw,38px);
+    font-weight:700;
+    margin-bottom:44px;
+    letter-spacing:-0.01em;
+  }
+
+  /* ---------- Skills (IC-chip style) ---------- */
+  .skills-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(230px,1fr));
+    gap:16px;
+  }
+  .chip-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:20px;
+    position:relative;
+    overflow:hidden;
+    transition:transform 0.2s ease, border-color 0.2s ease;
+  }
+  .chip-card:hover{ transform:translateY(-3px); border-color:var(--accent, var(--cyan)); }
+  .chip-card::before{
+    content:'';
+    position:absolute; top:0; left:0; right:0; height:3px;
+    background:var(--accent, var(--cyan));
+  }
+  .chip-card:nth-child(1){ --accent: var(--cyan); }
+  .chip-card:nth-child(2){ --accent: var(--magenta); }
+  .chip-card:nth-child(3){ --accent: var(--amber); }
+  .chip-card:nth-child(4){ --accent: var(--cyan); }
+  .chip-card:nth-child(5){ --accent: var(--magenta); }
+  .chip-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px;
+    margin-bottom:12px;
+  }
+  .chip-items{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip-item{
+    font-size:13px; padding:5px 10px; border-radius:6px;
+    background:var(--surface-2); color:var(--text);
+    border:1px solid var(--line);
+  }
+
+  /* ---------- Projects ---------- */
+  .project-list{ display:flex; flex-direction:column; gap:20px; }
+  .project-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:12px;
+    overflow:hidden;
+    transition:border-color 0.2s ease, transform 0.2s ease;
+  }
+  .project-card:hover{ border-color:var(--cyan); transform:translateY(-3px); }
+  .project-head{
+    display:flex; align-items:center; gap:10px;
+    padding:14px 20px;
+    background:var(--surface-2);
+    border-bottom:1px solid var(--line);
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .project-head .dots{ display:flex; gap:6px; }
+  .project-head .dots span{ width:9px; height:9px; border-radius:50%; }
+  .project-head .dots span:nth-child(1){ background:#ff5f57; }
+  .project-head .dots span:nth-child(2){ background:#febc2e; }
+  .project-head .dots span:nth-child(3){ background:#28c840; }
+  .project-body{ padding:26px 24px 28px; }
+  .project-num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px; color:var(--amber); margin-bottom:8px; display:block;
+  }
+  .project-title{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:22px; font-weight:700; margin-bottom:10px;
+  }
+  .project-desc{ color:#c3c9e8; font-size:15px; line-height:1.6; margin-bottom:16px; max-width:600px; }
+  .tech-row{ display:flex; flex-wrap:wrap; gap:8px; }
+  .tech-pill{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px; padding:5px 11px; border-radius:100px;
+    border:1px solid var(--line); color:var(--muted);
+  }
+
+  /* ---------- Contact ---------- */
+  .contact-panel{
+    background:linear-gradient(135deg, var(--surface), var(--surface-2));
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:52px 40px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .contact-panel::after{
+    content:'';
+    position:absolute; width:280px; height:280px; border-radius:50%;
+    background:radial-gradient(circle, rgba(255,62,165,0.18), transparent 70%);
+    top:-100px; right:-80px;
+  }
+  .contact-title{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:clamp(26px,4vw,36px); font-weight:700; margin-bottom:14px;
+  }
+  .contact-sub{ color:var(--muted); margin-bottom:34px; font-size:15px; }
+  .contact-links{
+    display:flex; flex-wrap:wrap; justify-content:center; gap:14px;
+    position:relative; z-index:1;
+  }
+  .contact-link{
+    font-family:'JetBrains Mono', monospace; font-size:13.5px;
+    padding:12px 20px; border-radius:8px;
+    background:var(--bg); border:1px solid var(--line);
+    display:flex; align-items:center; gap:8px;
+    transition:transform 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+  .contact-link:hover{ border-color:var(--cyan); color:var(--cyan); transform:translateY(-2px); }
+
+  footer{
+    padding:34px 0 50px; text-align:center;
+    font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .eyebrow .pulse{ animation:none; }
+    .project-card, .btn, .chip-card, .contact-link{ transition:none; }
+    .hero-photo::before{ animation:none; }
+    .hero-photo .scanline{ animation:none; display:none; }
+    .hero-anim > *{ animation:none; opacity:1; transform:none; }
+    .reveal{ opacity:1; transform:none; transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">rajesh<span class="dot">.</span>dev</div>
+    <div class="navlinks">
+      <a href="#skills">skills</a>
+      <a href="#projects">projects</a>
+      <a href="#contact">contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-text hero-anim">
+      <div class="eyebrow"><span class="pulse"></span> open to software engineering roles</div>
+      <h1 class="name">Nallabothula<br><span class="hl">Rajesh</span></h1>
+      <div class="role">ECE Student <span class="amber">→</span> Full-Stack Developer</div>
+      <p class="bio">Passionate Electronics and Communication Engineering student with a strong interest in software development and full-stack web technologies. Skilled in Python, React, Flask, HTML, CSS, and JavaScript — focused on building practical, user-friendly applications. Continuously learning, solving problems, and eager to contribute as a Software Engineer.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#projects">View projects →</a>
+        <a class="btn btn-ghost" href="#contact">Get in touch</a>
+      </div>
+    </div>
+    <div class="hero-photo hero-anim" style="animation-delay:0.2s">
+      <img src="assets/rajesh.png" alt="Portrait of Nallabothula Rajesh">
+      <div class="scanline"></div>
+    </div>
+  </div>
+</header>
+
+<section id="skills">
+  <div class="wrap reveal">
+    <div class="section-tag">component stack</div>
+    <h2 class="section-title">Skills</h2>
+    <div class="skills-grid">
+      <div class="chip-card">
+        <div class="chip-label">Languages</div>
+        <div class="chip-items">
+          <span class="chip-item">Python</span>
+          <span class="chip-item">JavaScript</span>
+          <span class="chip-item">HTML</span>
+          <span class="chip-item">CSS</span>
+        </div>
+      </div>
+      <div class="chip-card">
+        <div class="chip-label">Frontend</div>
+        <div class="chip-items">
+          <span class="chip-item">React</span>
+        </div>
+      </div>
+      <div class="chip-card">
+        <div class="chip-label">Backend</div>
+        <div class="chip-items">
+          <span class="chip-item">Flask</span>
+        </div>
+      </div>
+      <div class="chip-card">
+        <div class="chip-label">Tools</div>
+        <div class="chip-items">
+          <span class="chip-item">Git</span>
+          <span class="chip-item">GitHub</span>
+          <span class="chip-item">VS Code</span>
+          <span class="chip-item">PyCharm</span>
+        </div>
+      </div>
+      <div class="chip-card">
+        <div class="chip-label">Concepts</div>
+        <div class="chip-items">
+          <span class="chip-item">Data Structures & Algorithms</span>
+          <span class="chip-item">REST APIs</span>
+          <span class="chip-item">Responsive Design</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap reveal">
+    <div class="section-tag">signal output</div>
+    <h2 class="section-title">Projects</h2>
+    <div class="project-list">
+
+      <div class="project-card reveal">
+        <div class="project-head">
+          <div class="dots"><span></span><span></span><span></span></div>
+          coding-learning-platform.py
+        </div>
+        <div class="project-body">
+          <span class="project-num">01</span>
+          <div class="project-title">Coding Learning Platform</div>
+          <p class="project-desc">Interactive web application for learning programming through quizzes and coding challenges.</p>
+          <div class="tech-row">
+            <span class="tech-pill">React</span>
+            <span class="tech-pill">Flask</span>
+            <span class="tech-pill">Python</span>
+            <span class="tech-pill">HTML</span>
+            <span class="tech-pill">CSS</span>
+            <span class="tech-pill">JavaScript</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-head">
+          <div class="dots"><span></span><span></span><span></span></div>
+          careeros-ai.py
+        </div>
+        <div class="project-body">
+          <span class="project-num">02</span>
+          <div class="project-title">CareerOS AI</div>
+          <p class="project-desc">AI-powered career assistant for resume analysis, interview preparation, and career guidance.</p>
+          <div class="tech-row">
+            <span class="tech-pill">React</span>
+            <span class="tech-pill">Flask</span>
+            <span class="tech-pill">Python</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-head">
+          <div class="dots"><span></span><span></span><span></span></div>
+          portfolio.html
+        </div>
+        <div class="project-body">
+          <span class="project-num">03</span>
+          <div class="project-title">Portfolio Website</div>
+          <p class="project-desc">A responsive personal portfolio showcasing my projects, skills, and achievements.</p>
+          <div class="tech-row">
+            <span class="tech-pill">React</span>
+            <span class="tech-pill">HTML</span>
+            <span class="tech-pill">CSS</span>
+            <span class="tech-pill">JavaScript</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="contact-panel reveal">
+      <div class="contact-title">Let's build something.</div>
+      <p class="contact-sub">Open to Software Engineering opportunities — reach out any time.</p>
+      <div class="contact-links">
+        <a class="contact-link" href="mailto:23x51a0474@srecnandyal.edu.in">✉ 23x51a0474@srecnandyal.edu.in</a>
+        <a class="contact-link" href="tel:+919989860552">☎ +91 99898 60552</a>
+        <a class="contact-link" href="https://www.linkedin.com/in/nallabothula-rajesh-49729632a" target="_blank" rel="noopener">in LinkedIn</a>
+        <a class="contact-link" href="https://share.google/0gULiOn6M4ch7Zpnj" target="_blank" rel="noopener">⌥ GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 Nallabothula Rajesh — built with React-ready structure, currently static HTML.
+</footer>
+
+<script>
+  const revealEls = document.querySelectorAll('.reveal');
+  revealEls.forEach((el, i) => {
+    if (el.classList.contains('project-card')) {
+      el.style.transitionDelay = (i % 3) * 0.12 + 's';
+    }
+  });
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  revealEls.forEach(el => io.observe(el));
+</script>
+</body>
+</html>
